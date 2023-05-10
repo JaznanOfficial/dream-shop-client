@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromCart, toggleCartQty, getCartTotal, clearCart } from "../../store/cartSlice";
 import { formatPrice } from "../../utils/helpers";
+import { loadStripe } from "@stripe/stripe-js";
 
 const CartPage = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,8 @@ const CartPage = () => {
         totalAmount,
         deliveryCharge,
     } = useSelector((state) => state.cart);
+    const grandTotal = totalAmount + deliveryCharge;
+    console.log(grandTotal);
 
     useEffect(() => {
         dispatch(getCartTotal());
@@ -20,6 +23,37 @@ const CartPage = () => {
     }, [useSelector((state) => state.cart)]);
 
     const emptyCartMsg = <h4 className="text-red fw-6">No items found!</h4>;
+
+    const stripePromise = loadStripe(
+        "pk_test_51LRzbYAMDIcwcvPooBdPWBaZ09NRclivm40bZVDjlz3zUiUcDhrHYQ5FDHSZm3XGiQuoEW4bVjVycNAwqJQXyHhC00sWaceOkD"
+    );
+
+    const payToStripe = async () => {
+        const stripe = await stripePromise;
+        const response = await fetch("https://blogs-server-ms.onrender.com/create-payment-page", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                amount: grandTotal, // Pass the total amount from your state
+                currency: "usd", // Specify the currency code
+                // name: cartProducts.title,
+                // quantity:cartProducts.quantity
+            }),
+        });
+        const { sessionId } = await response.json();
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId,
+        });
+
+        if (result.error) {
+            console.error(result.error.message);
+        } else {
+            // Clear the cart after successful checkout
+            dispatch(clearCart());
+        }
+    };
 
     return (
         <div className="cart-page">
@@ -172,7 +206,11 @@ const CartPage = () => {
                                         </span>
                                     </div>
                                     <div className="cart-summary-btn">
-                                        <button type="button" className="btn-secondary">
+                                        <button
+                                            type="button"
+                                            className="btn-secondary"
+                                            onClick={payToStripe}
+                                        >
                                             Proceed to Checkout
                                         </button>
                                     </div>

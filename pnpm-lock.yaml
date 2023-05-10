@@ -4,6 +4,9 @@ dependencies:
   '@reduxjs/toolkit':
     specifier: ^1.8.5
     version: 1.8.5(react-redux@8.0.4)(react@18.2.0)
+  '@stripe/stripe-js':
+    specifier: ^1.52.1
+    version: 1.52.1
   '@testing-library/jest-dom':
     specifier: ^5.16.5
     version: 5.16.5
@@ -2137,6 +2140,10 @@ packages:
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
     dependencies:
       '@sinonjs/commons': 1.8.6
+    dev: false
+
+  /@stripe/stripe-js@1.52.1:
+    resolution: {integrity: sha512-fza40OPSpGQlFxc5TZWiYC/6Lk89Sep1fLuv9ss33YS6lCAF8UZbfA1E6W+lwO4c7WRKZIZumHIEbPJfP/O9uw==}
     dev: false
 
   /@surma/rollup-plugin-off-main-thread@2.2.3:
