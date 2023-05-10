@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./CartPage.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromCart, toggleCartQty, getCartTotal, clearCart } from "../../store/cartSlice";
 import { formatPrice } from "../../utils/helpers";
 import { loadStripe } from "@stripe/stripe-js";
+import CheckoutLoader from "../../components/Loader/CheckoutLoader";
 
 const CartPage = () => {
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const {
         data: cartProducts,
@@ -29,6 +31,7 @@ const CartPage = () => {
     );
 
     const payToStripe = async () => {
+        setLoading(true);
         const stripe = await stripePromise;
         const response = await fetch("https://blogs-server-ms.onrender.com/create-payment-page", {
             method: "POST",
@@ -47,12 +50,14 @@ const CartPage = () => {
             sessionId: sessionId,
         });
 
+        setLoading(false);
+
         if (result.error) {
             console.error(result.error.message);
         }
         // Clear the cart after successful checkout
         else {
-            console.log(result)
+            console.log(result);
             dispatch(clearCart());
         }
     };
@@ -212,8 +217,9 @@ const CartPage = () => {
                                             type="button"
                                             className="btn-secondary"
                                             onClick={payToStripe}
+                                            disabled={loading}
                                         >
-                                            Proceed to Checkout
+                                            {loading ? <CheckoutLoader /> : "Checkout"}
                                         </button>
                                     </div>
                                 </div>

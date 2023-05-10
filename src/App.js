@@ -15,6 +15,7 @@ function App() {
             <Provider store={store}>
                 <BrowserRouter>
                     <Navbar />
+
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/category/:id" element={<Category />} />
