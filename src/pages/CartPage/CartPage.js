@@ -49,8 +49,10 @@ const CartPage = () => {
 
         if (result.error) {
             console.error(result.error.message);
-        } else {
-            // Clear the cart after successful checkout
+        }
+        // Clear the cart after successful checkout
+        else {
+            console.log(result)
             dispatch(clearCart());
         }
     };

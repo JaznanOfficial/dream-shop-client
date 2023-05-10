@@ -52,9 +52,12 @@ const cartSlice = createSlice({
             state.data = tempCart;
             storeInLocalStorage(state.data);
         },
-        clearCart(state) {
+        clearCart: (state) => {
+            // Clear the cart items
             state.data = [];
-            storeInLocalStorage(state.data);
+            state.totalItems = 0;
+            state.totalAmount = 0;
+            state.deliveryCharge = 0;
         },
         toggleCartQty(state, action) {
             const tempCart = state.data.map((item) => {
